@@ -10,7 +10,7 @@ exports.handler = async (event) => {
 
     const monto = transaccion.monto;
 
-    if (transactionDB.monto < monto) {
+    if (transactionDB.monto > monto) {
 
         const saldo = transactionDB.monto - monto;
 

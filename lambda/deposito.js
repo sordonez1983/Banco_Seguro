@@ -4,24 +4,21 @@ exports.handler = async (event) => {
     const mysql = require('mysql');
 
     const connection = mysql.createConnection({
-        host: 'localhost',   
+        host: '127.0.0.1',   
         user: 'root',
-        password: 'root',
-        database: 'mydb' //3306
+        password: 'Admin12345*',
+        database: 'api_bancaria',
+        port: 3306
     });
 
     const transaccion = JSON.parse(event.body.numeroCuenta);
     const objCuenta = connection.query(
-        'SELECT * FROM cuenta WHERE numeroCuenta = ?',
+        'SELECT * FROM cuentabancaria WHERE numeroCuenta = ?',
         [transaccion.cuenta],
         
     );
 
-    if(objCuenta.monto > transaccion.monto) {
-
-    }
-
-
+    const monto = objCuenta.monto;
 
     return {
         statusCode: 200,
