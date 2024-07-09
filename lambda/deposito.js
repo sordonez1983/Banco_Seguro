@@ -1,30 +1,24 @@
-exports.handler = async (event) => {
+const mysql = require('mysql');
 
-    // Conectarse a mysql
-    const mysql = require('mysql');
+const con = mysql.createConnection({
+  host: '0.tcp.sa.ngrok.io',
+  user: 'root',
+  port: "15470",
+  password: '12345678',
+  database: 'bd_banco_seguro',
+});
 
-    const connection = mysql.createConnection({
-        host: 'localhost',   
-        user: 'root',
-        password: 'root',
-        database: 'mydb' //3306
-    });
-
-    const transaccion = JSON.parse(event.body.numeroCuenta);
-    const objCuenta = connection.query(
-        'SELECT * FROM cuenta WHERE numeroCuenta = ?',
-        [transaccion.cuenta],
-        
-    );
-
-    if(objCuenta.monto > transaccion.monto) {
-
+exports.handler = (event, context, callback) => {
+  const numeroCuenta = JSON.stringify(event.numeroCuenta);
+  const saldo = JSON.parse(event.saldo);
+  // allows for using callbacks as finish/error-handlers
+  context.callbackWaitsForEmptyEventLoop = false;
+  const sql = "UPDATE cuentabancaria SET saldo = saldo + "+saldo+" WHERE (numeroCuenta = "+numeroCuenta+")";
+  con.query(sql, (err, res) => {
+    if (err) {
+      throw err
     }
-
-
-
-    return {
-        statusCode: 200,
-        body: JSON.stringify({ message: "Deposito por realizar" })
-    }
-}
+    callback(null, 'Se registro valor.');
+  });
+    
+};

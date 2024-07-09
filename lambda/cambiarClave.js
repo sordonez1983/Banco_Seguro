@@ -1,29 +1,24 @@
-exports.handler = async (event) => {
-    const transaccion = JSON.parse(event.body);
+const mysql = require('mysql');
 
-    const transactionDB = {
-        numeroCuenta: "123456",
-        clave: 654321,
-        estado: "completed",
-        timestamp: new Date().toISOString()
-    };
+const con = mysql.createConnection({
+  host: '0.tcp.sa.ngrok.io',
+  user: 'root',
+  port: "15470",
+  password: '12345678',
+  database: 'bd_banco_seguro',
+});
 
-    const clave = transaccion.clave;
-
-    if (transactionDB.clave != clave) {
-
-        const nuevaclave = clave;
-
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ message: "Cambio exitoso", nuevaclave })
-        }
-
-    }else{
-        return {
-            statusCode: 400,
-            body: JSON.stringify({ message: "No puede repetirse la clave" })
-        }
+exports.handler = (event, context, callback) => {
+  const numeroCuenta = JSON.stringify(event.numeroCuenta);
+  const claveTarjeta = JSON.stringify(event.claveTarjeta);
+  // allows for using callbacks as finish/error-handlers
+  context.callbackWaitsForEmptyEventLoop = false;
+  const sql = "UPDATE cuentabancaria SET claveTarjeta = "+claveTarjeta+" WHERE (numeroCuenta = "+numeroCuenta+")";
+  con.query(sql, (err, res) => {
+    if (err) {
+      throw err
     }
-
-}
+    callback(null, 'Se registro valor.');
+  });
+    
+};
