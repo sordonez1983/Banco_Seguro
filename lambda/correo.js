@@ -12,7 +12,7 @@ exports.handler = async (event) => {
             },
             Subject: { Data: event.subject },
         },
-        Source: 'paulnacimba@hotmail.com',
+        Source: 'jsordonez12@utpl.edu.ec.com',
     };
 
     try {
