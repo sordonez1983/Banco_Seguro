@@ -51,7 +51,7 @@ export class ATMStack extends Stack {
     resource.addResource('retirar').addMethod('POST', new LambdaIntegration(lambdaRetirarDinero))
     resource.addResource('cambiarClave').addMethod('POST', new LambdaIntegration(lambdaCambiarClave))
 
-    resource.addResource("correo").addMethod('POST', new LambdaIntegration(lambdaCambiarClave))
+    resource.addResource("correo").addMethod('POST', new LambdaIntegration(lambdaCorreo))
 
 
 

@@ -5,7 +5,7 @@ const ses = new AWS.SES();
 exports.handler = async (event) => {
     const params = {
         Destination: {
-            ToAddresses: ['sebastian_ordonez@hotmail.com'],
+            ToAddresses: ['sebastian.ordz@gmail.com'],
         },
         Message: {
             Body: {
@@ -13,7 +13,7 @@ exports.handler = async (event) => {
             },
             Subject: { Data: 'Test envío e-mail' },
         },
-        Source: 'sebastian.ordz@gmail.com',
+        Source: 'sebastian_ordonez@hotmail.com',
     };
 
     try {
