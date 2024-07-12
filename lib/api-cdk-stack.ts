@@ -28,11 +28,19 @@ export class ATMStack extends Stack {
       code: Code.fromAsset('lambda'),
     })
 
+ // Lambda para enviar correo
+ const lambdaCorreo = new Function(this, 'Lambdacorreo', {
+  runtime: Runtime.NODEJS_20_X,
+  handler: 'correo.handler',
+  code: Code.fromAsset('lambda'),
+})
 
     // API Gateway para exponer las funciones
     const api = new RestApi(this, 'ApiGateway', {
       restApiName: 'ApiGateway-ATM',
     })
+
+
 
     // Crear los recursos
     // /atm/depositar
@@ -43,7 +51,7 @@ export class ATMStack extends Stack {
     resource.addResource('retirar').addMethod('POST', new LambdaIntegration(lambdaRetirarDinero))
     resource.addResource('cambiarClave').addMethod('POST', new LambdaIntegration(lambdaCambiarClave))
 
-
+    resource.addResource("correo").addMethod('POST', new LambdaIntegration(lambdaCambiarClave))
 
 
 

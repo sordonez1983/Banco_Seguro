@@ -1,10 +1,11 @@
+//lambda/email
 const AWS = require('aws-sdk');
 const ses = new AWS.SES();
 
 exports.handler = async (event) => {
     const params = {
         Destination: {
-            ToAddresses: ['jsordonez12@utpl.edu.ec'],
+            ToAddresses: ['sebastian_ordonez@hotmail.com'],
         },
         Message: {
             Body: {

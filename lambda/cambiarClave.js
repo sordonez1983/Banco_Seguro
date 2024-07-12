@@ -3,9 +3,9 @@ const mysql = require('mysql');
 const con = mysql.createConnection({
   host: '0.tcp.sa.ngrok.io',
   user: 'root',
-  port: "15470",
-  password: '12345678',
-  database: 'bd_banco_seguro',
+  port: "10120",
+  password: 'Casa19901984$',
+  database: 'api_bancaria',
 });
 
 exports.handler = (event, context, callback) => {

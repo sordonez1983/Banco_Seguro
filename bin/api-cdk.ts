@@ -5,6 +5,7 @@ import { ATMStack as ATMStack } from '../lib/api-cdk-stack';
 
 const app = new cdk.App();
 new ATMStack(app, 'ATMStack', {
+env: { account:"211125538507", region:"us-east-1" },
 
 })
   /* If you don't specify 'env', this stack will be environment-agnostic.
@@ -18,3 +19,4 @@ new ATMStack(app, 'ATMStack', {
   /* Uncomment the next line if you know exactly what Account and Region you
    * want to deploy the stack to. */
   // env: { account: '123456789012', region: 'us-east-1' }
+
