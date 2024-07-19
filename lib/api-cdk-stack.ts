@@ -31,6 +31,7 @@ export class ATMStack extends Stack {
  // Lambda para enviar correo
  const lambdaCorreo = new Function(this, 'Lambdacorreo', {
   runtime: Runtime.NODEJS_16_X,
+  name: 'LambdaCorreo',
   handler: 'correo.handler',
   code: Code.fromAsset('lambda'),
 })

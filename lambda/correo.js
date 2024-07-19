@@ -5,7 +5,7 @@ const ses = new AWS.SES();
 exports.handler = async (event) => {
     const params = {
         Destination: {
-            ToAddresses: ['sebastian.ordz@gmail.com'],
+            ToAddresses: ['racorrea2@utpl.edu.ec'],
         },
         Message: {
             Body: {
@@ -19,15 +19,9 @@ exports.handler = async (event) => {
     try {
         const result = await ses.sendEmail(params).promise();
         console.log(result);
-        return {
-            statusCode: 200,
-            body: JSON.stringify('Email enviado correctamente!'),
-        };
+        return true
     } catch (error) {
         console.error(error);
-        return {
-            statusCode: 500,
-            body: JSON.stringify('Fallo envio de email.'),
-        };
+        return false
     }
 };
