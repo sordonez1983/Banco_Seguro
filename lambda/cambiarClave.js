@@ -3,7 +3,7 @@ const mysql = require('mysql');
 const con = mysql.createConnection({
   host: '0.tcp.sa.ngrok.io',
   user: 'root',
-  port: "10120",
+  port: "13965",
   password: 'Casa19901984$',
   database: 'api_bancaria',
 });

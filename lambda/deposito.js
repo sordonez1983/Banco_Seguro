@@ -21,7 +21,6 @@ exports.handler = (event, context, callback) => {
 
     invocaremail();
 
-
     callback(null, 'Se registro valor.');
   });
 
@@ -35,7 +34,6 @@ exports.handler = (event, context, callback) => {
 try {
     const response = await lambda.invoke(params).promise();
 
-
     if(response){
 // Armar la respuesta para el API Gateway
 const apiResponse = {
@@ -43,8 +41,6 @@ const apiResponse = {
   body: JSON.stringify(transactionResponse)
 };
     }
-
-    
 
     return apiResponse;
 } catch (error) {
