@@ -1,55 +1,44 @@
 const mysql = require('mysql');
+const AWS = require('aws-sdk');
+const lambda = new AWS.Lambda();
 
+//Creamos la conexion con la base de datos
 const con = mysql.createConnection({
   host: '0.tcp.sa.ngrok.io',
   user: 'root',
-  port: "10120",
-  password: 'Casa19901984$',
+  port: "19346",
+  password: '12345678',
   database: 'api_bancaria',
 });
 
 exports.handler = (event, context, callback) => {
-  const numeroCuenta = JSON.stringify(event.body.numeroCuenta);
-  const saldo = JSON.parse(event.saldo);
+  const numeroCuenta = mysql.escape(event.numeroCuenta); // Usar mysql.escape para evitar inyecciones SQL
+  const saldo = parseFloat(event.saldo); // Asegúrate de convertir el saldo a un número
   // allows for using callbacks as finish/error-handlers
   context.callbackWaitsForEmptyEventLoop = false;
-  const sql = "UPDATE cuentabancaria SET saldo = saldo + "+saldo+" WHERE (numeroCuenta = "+numeroCuenta+")";
-  con.query(sql, (err, res) => {
+
+  const updateSql = "UPDATE cuentabancaria SET saldo = saldo + "+saldo+" WHERE (numeroCuenta = "+numeroCuenta+")";
+  con.query(updateSql, (err, res) => {
     if (err) {
-      throw err
+      throw err;
     }
 
-    invocaremail();
-
-    callback(null, 'Se registro valor.');
+    const insertSql = "INSERT INTO transaccion (tipo, monto, fecha, idCuenta) VALUES ('Deposito', "+saldo+", now(),'1')";
+    con.query(insertSql, (err, res) => {
+      if (err) {
+        throw err;
+      }
+      
+      const params = {
+        FunctionName: 'Correo', // Nombre de la Lambda B
+        InvocationType: 'RequestResponse'
+      };
+      lambda.invoke(params, (err, data) => {
+        if (err) {
+          throw err;
+        }
+        callback(null, 'Se registró el valor.');
+      });
+    });
   });
-
-
-  function async invocaremail(){
-  const params = {
-    FunctionName: 'LambdaCorreo', // Nombre de la lambda
-    InvocationType: 'RequestResponse' // Esperar la respuesta
-};
-
-try {
-    const response = await lambda.invoke(params).promise();
-
-    if(response){
-// Armar la respuesta para el API Gateway
-const apiResponse = {
-  statusCode: 200,
-  body: JSON.stringify(transactionResponse)
-};
-    }
-
-    return apiResponse;
-} catch (error) {
-    // Manejar errores
-    console.error("Error:", error);
-    return {
-        statusCode: 500,
-        body: JSON.stringify({ message: "Error interno del servidor" })
-    };
-}
-}    
 };
