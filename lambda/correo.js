@@ -4,7 +4,7 @@ const ses = new AWS.SES();
 exports.handler = async (event) => {
     const params = {
         Destination: {
-            ToAddresses: ['paulnacimba@hotmail.com'],
+            ToAddresses: ['racorrea2@utpl.edu.ec'],
         },
         Message: {
             Body: {

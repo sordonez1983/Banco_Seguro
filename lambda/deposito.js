@@ -2,11 +2,11 @@ const mysql = require('mysql');
 const AWS = require('aws-sdk');
 const lambda = new AWS.Lambda();
 
-//Creamos la conexion con la base de datos
+// Creamos la conexión con la base de datos
 const con = mysql.createConnection({
   host: '0.tcp.sa.ngrok.io',
   user: 'root',
-  port: "19346",
+  port: "15603",
   password: '12345678',
   database: 'api_bancaria',
 });
@@ -17,27 +17,41 @@ exports.handler = (event, context, callback) => {
   // allows for using callbacks as finish/error-handlers
   context.callbackWaitsForEmptyEventLoop = false;
 
-  const updateSql = "UPDATE cuentabancaria SET saldo = saldo + "+saldo+" WHERE (numeroCuenta = "+numeroCuenta+")";
-  con.query(updateSql, (err, res) => {
+  // Consulta para obtener el saldo actual
+  const selectSql = "SELECT id FROM cuentabancaria WHERE numeroCuenta = "+numeroCuenta+"";
+  con.query(selectSql, (err, result) => {
     if (err) {
-      throw err;
+      callback(err);
+      return;
     }
+    
+    const idActual = result[0].id;
 
-    const insertSql = "INSERT INTO transaccion (tipo, monto, fecha, idCuenta) VALUES ('Deposito', "+saldo+", now(),'1')";
-    con.query(insertSql, (err, res) => {
+    const updateSql = "UPDATE cuentabancaria SET saldo = saldo + "+saldo+" WHERE (numeroCuenta = "+numeroCuenta+")";
+    con.query(updateSql, (err, res) => {
       if (err) {
-        throw err;
+        callback(err);
+        return;
       }
-      
-      const params = {
-        FunctionName: 'Correo', // Nombre de la Lambda B
-        InvocationType: 'RequestResponse'
-      };
-      lambda.invoke(params, (err, data) => {
+
+      const insertSql = "INSERT INTO transaccion (tipo, monto, fecha, idCuenta) VALUES ('Deposito', "+saldo+", now(), "+idActual+")";
+      con.query(insertSql, (err, res) => {
         if (err) {
-          throw err;
+          callback(err);
+          return;
         }
-        callback(null, 'Se registró el valor.');
+
+        const params = {
+          FunctionName: 'Correo', // Nombre de la Lambda B
+          InvocationType: 'RequestResponse'
+        };
+        lambda.invoke(params, (err, data) => {
+          if (err) {
+            callback(err);
+            return;
+          }
+          callback(null, 'Se registró el valor Correctamente.');
+        });
       });
     });
   });
